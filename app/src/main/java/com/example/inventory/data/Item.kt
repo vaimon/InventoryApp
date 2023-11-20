@@ -33,4 +33,8 @@ data class Item(
     val supplierName: String,
     val supplierPhone: String,
     val supplierEmail: String,
-)
+){
+    override fun toString(): String {
+        return "#$id $name: $price₽ ($quantity left) [Supplier: $supplierName/$supplierPhone/$supplierEmail]"
+    }
+}

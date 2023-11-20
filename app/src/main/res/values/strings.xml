@@ -41,4 +41,5 @@
     <string name="supplier_name">Supplier name</string>
     <string name="supplier_phone">Supplier phone</string>
     <string name="supplier_email">Supplier email</string>
+    <string name="share">Share</string>
 </resources>
