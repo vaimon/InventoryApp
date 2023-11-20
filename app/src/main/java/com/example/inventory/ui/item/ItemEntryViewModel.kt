@@ -41,7 +41,7 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
      */
     fun updateUiState(itemDetails: ItemDetails) {
         itemUiState =
-            ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
+            ItemUiState(itemDetails = itemDetails)
     }
 
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
@@ -62,14 +62,6 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
  */
 data class ItemUiState(
     val itemDetails: ItemDetails = ItemDetails(),
-    val isEntryValid: Boolean = false
-)
-
-data class ItemDetails(
-    val id: Int = 0,
-    val name: String = "",
-    val price: String = "",
-    val quantity: String = "",
 )
 
 /**
@@ -91,9 +83,8 @@ fun Item.formatedPrice(): String {
 /**
  * Extension function to convert [Item] to [ItemUiState]
  */
-fun Item.toItemUiState(isEntryValid: Boolean = false): ItemUiState = ItemUiState(
+fun Item.toItemUiState(): ItemUiState = ItemUiState(
     itemDetails = this.toItemDetails(),
-    isEntryValid = isEntryValid
 )
 
 /**

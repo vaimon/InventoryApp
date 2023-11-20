@@ -45,7 +45,7 @@ class ItemEditViewModel(
             itemUiState = itemsRepository.getItemStream(itemId)
                 .filterNotNull()
                 .first()
-                .toItemUiState(true)
+                .toItemUiState()
         }
     }
 
@@ -57,7 +57,7 @@ class ItemEditViewModel(
 
     fun updateUiState(itemDetails: ItemDetails) {
         itemUiState =
-            ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
+            ItemUiState(itemDetails = itemDetails)
     }
 
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
