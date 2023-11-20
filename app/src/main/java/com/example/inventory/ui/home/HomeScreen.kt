@@ -182,15 +182,15 @@ private fun InventoryItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeBodyPreview() {
-    InventoryTheme {
-        HomeBody(listOf(
-            Item(1, "Game", 100.0, 20), Item(2, "Pen", 200.0, 30), Item(3, "TV", 300.0, 50)
-        ), onItemClick = {})
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeBodyPreview() {
+//    InventoryTheme {
+//        HomeBody(listOf(
+//            Item(1, "Game", 100.0, 20), Item(2, "Pen", 200.0, 30), Item(3, "TV", 300.0, 50)
+//        ), onItemClick = {})
+//    }
+//}
 
 @Preview(showBackground = true)
 @Composable
@@ -200,12 +200,12 @@ fun HomeBodyEmptyListPreview() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun InventoryItemPreview() {
-    InventoryTheme {
-        InventoryItem(
-            Item(1, "Game", 100.0, 20),
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun InventoryItemPreview() {
+//    InventoryTheme {
+//        InventoryItem(
+//            Item(1, "Game", 100.0, 20),
+//        )
+//    }
+//}

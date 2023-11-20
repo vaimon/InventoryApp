@@ -108,6 +108,51 @@ fun ItemInputForm(
             enabled = enabled,
             singleLine = true
         )
+        OutlinedTextField(
+            value = itemDetails.supplierName,
+            onValueChange = { onValueChange(itemDetails.copy(supplierName = it)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            label = { Text(stringResource(R.string.supplier_name_req)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            isError = !itemDetails.isSupplierNameValid && itemDetails.supplierName.isNotBlank(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = itemDetails.supplierPhone,
+            onValueChange = { onValueChange(itemDetails.copy(supplierPhone = it)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            label = { Text(stringResource(R.string.supplier_phone_req)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            isError = !itemDetails.isSupplierPhoneValid && itemDetails.supplierPhone.isNotBlank(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = itemDetails.supplierEmail,
+            onValueChange = { onValueChange(itemDetails.copy(supplierEmail = it)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            label = { Text(stringResource(R.string.supplier_email_req)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            isError = !itemDetails.isSupplierEmailValid && itemDetails.supplierEmail.isNotBlank(),
+            enabled = enabled,
+            singleLine = true
+        )
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_fields),

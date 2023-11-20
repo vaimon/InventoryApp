@@ -73,7 +73,10 @@ fun ItemDetails.toItem(): Item = Item(
     id = id,
     name = name,
     price = price.toDoubleOrNull() ?: 0.0,
-    quantity = quantity.toIntOrNull() ?: 0
+    quantity = quantity.toIntOrNull() ?: 0,
+    supplierName = supplierName,
+    supplierEmail = supplierEmail,
+    supplierPhone =  supplierPhone
 )
 
 fun Item.formatedPrice(): String {
@@ -94,5 +97,8 @@ fun Item.toItemDetails(): ItemDetails = ItemDetails(
     id = id,
     name = name,
     price = price.toString(),
-    quantity = quantity.toString()
+    quantity = quantity.toString(),
+    supplierName = supplierName,
+    supplierEmail = supplierEmail,
+    supplierPhone =  supplierPhone
 )
