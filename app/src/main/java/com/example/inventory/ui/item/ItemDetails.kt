@@ -16,7 +16,7 @@ data class ItemDetails(
 
     val isNameValid: Boolean
         get() {
-            return Regex("""[\wА-Яа-я\-]+""").matches(name)
+            return Regex("""[\wА-Яа-я\- ]+""").matches(name)
         }
 
     val isPriceValid: Boolean
@@ -31,7 +31,7 @@ data class ItemDetails(
 
     val isSupplierNameValid: Boolean
         get() {
-            return Regex("""[\wА-Яа-я\-]+""").matches(supplierName)
+            return Regex("""[\wА-Яа-я\- ]+""").matches(supplierName)
         }
 
     val isSupplierEmailValid: Boolean
