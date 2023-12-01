@@ -43,4 +43,7 @@
     <string name="supplier_email">Supplier email</string>
     <string name="share">Share</string>
     <string name="settings">Settings</string>
+    <string name="data_sharing">Data sharing</string>
+    <string name="use_default_values">Use default values</string>
+    <string name="hide_sensitive_data">Hide sensitive data</string>
 </resources>
