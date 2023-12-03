@@ -1,5 +1,7 @@
 package com.example.inventory.ui.item
 
+import com.example.inventory.utils.FieldValidator
+
 data class ItemDetails(
     val id: Int = 0,
     val name: String = "",
@@ -11,36 +13,36 @@ data class ItemDetails(
 ) {
     val isEntryValid: Boolean
         get() {
-            return isNameValid && isPriceValid && isQuantityValid // and isSupplierNameValid and isSupplierEmailValid and isSupplierPhoneValid
+            return isNameValid && isPriceValid && isQuantityValid && isSupplierNameValid && isSupplierEmailValid && isSupplierPhoneValid
         }
 
     val isNameValid: Boolean
         get() {
-            return Regex("""[\wА-Яа-я\- ]+""").matches(name)
+            return FieldValidator.validateName(name)
         }
 
     val isPriceValid: Boolean
         get() {
-            return Regex("""\d+(\.\d+)*""").matches(price)
+            return FieldValidator.validatePrice(price)
         }
 
     val isQuantityValid: Boolean
         get() {
-            return Regex("""\d+""").matches(quantity)
+            return FieldValidator.validateNumber(quantity)
         }
 
     val isSupplierNameValid: Boolean
         get() {
-            return Regex("""[\wА-Яа-я\- ]+""").matches(supplierName)
+            return FieldValidator.validateName(supplierName)
         }
 
     val isSupplierEmailValid: Boolean
         get() {
-            return Regex("""^[a-z0-9!#${'$'}%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#${'$'}%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?${'$'}""").matches(supplierEmail)
+            return FieldValidator.validateEmail(supplierEmail)
         }
 
     val isSupplierPhoneValid: Boolean
         get() {
-            return Regex("""(\+7|8)[- _]*\(?[- _]*(\d{3}[- _]*\)?([- _]*\d){7}|\d\d[- _]*\d\d[- _]*\)?([- _]*\d){6})""").matches(supplierPhone)
+            return FieldValidator.validatePhoneNumber(supplierPhone)
         }
 }
