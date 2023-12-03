@@ -22,17 +22,22 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
+import com.example.inventory.data.SettingsRepository
+import com.example.inventory.data.SettingsSet
 import java.text.NumberFormat
 
 /**
  * ViewModel to validate and insert items in the Room database.
  */
-class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewModel() {
+class ItemEntryViewModel(
+    private val itemsRepository: ItemsRepository,
+    private val settingsRepository: SettingsRepository
+) : ViewModel() {
 
     /**
      * Holds current item ui state
      */
-    var itemUiState by mutableStateOf(ItemUiState())
+    var itemUiState by mutableStateOf(ItemUiState(settingsRepository.getSettings().toItemDetails()))
         private set
 
     /**
@@ -44,16 +49,8 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
             ItemUiState(itemDetails = itemDetails)
     }
 
-    private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
-        return with(uiState) {
-            name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()
-        }
-    }
-
     suspend fun saveItem() {
-        if (validateInput()) {
             itemsRepository.insertItem(itemUiState.itemDetails.toItem())
-        }
     }
 }
 
@@ -102,3 +99,9 @@ fun Item.toItemDetails(): ItemDetails = ItemDetails(
     supplierEmail = supplierEmail,
     supplierPhone =  supplierPhone
 )
+
+fun SettingsSet.toItemDetails() = if (shouldUseDefaults == true) ItemDetails(
+    supplierName = defaultSupplierName ?: "",
+    supplierPhone = defaultSupplierPhone ?: "",
+    supplierEmail = defaultSupplierEmail ?: ""
+) else ItemDetails()

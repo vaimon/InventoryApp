@@ -44,7 +44,8 @@ object AppViewModelProvider {
         // Initializer for ItemEntryViewModel
         initializer {
             ItemEntryViewModel(
-                inventoryApplication().container.itemsRepository
+                inventoryApplication().container.itemsRepository,
+                inventoryApplication().container.settingsRepository
             )
         }
 
