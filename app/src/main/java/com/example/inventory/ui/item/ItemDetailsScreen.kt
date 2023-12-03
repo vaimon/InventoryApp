@@ -25,6 +25,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,10 +56,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
@@ -147,7 +152,8 @@ private fun ItemDetailsBody(
 
         ItemDetails(
             item = itemDetailsUiState.itemDetails.toItem(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shouldHideSupplierData = itemDetailsUiState.sensitiveDataBlurEnabled
         )
         Button(
             onClick = onSellItem,
@@ -157,23 +163,25 @@ private fun ItemDetailsBody(
         ) {
             Text(stringResource(R.string.sell))
         }
-        OutlinedButton(
-            onClick = { deleteConfirmationRequired = true },
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.delete))
-        }
+        Row {
+            OutlinedButton(
+                onClick = { deleteConfirmationRequired = true },
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.delete))
+            }
 
-        OutlinedButton(
-            enabled = itemDetailsUiState.dataSharingEnabled,
-            onClick = {
-                      shareLauncher.launch(Intent.createChooser(shareIntent, "Share product via:"))
-            },
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.share))
+            OutlinedButton(
+                enabled = itemDetailsUiState.dataSharingEnabled,
+                onClick = {
+                    shareLauncher.launch(Intent.createChooser(shareIntent, "Share product via:"))
+                },
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.share))
+            }
         }
 
         if (deleteConfirmationRequired) {
@@ -191,7 +199,9 @@ private fun ItemDetailsBody(
 
 @Composable
 fun ItemDetails(
-    item: Item, modifier: Modifier = Modifier
+    item: Item,
+    modifier: Modifier = Modifier,
+    shouldHideSupplierData: Boolean
 ) {
     Card(
         modifier = modifier,
@@ -232,6 +242,7 @@ fun ItemDetails(
             ItemDetailsRow(
                 labelResID = R.string.supplier_name,
                 itemDetail = item.supplierName,
+                hideData = shouldHideSupplierData,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -239,6 +250,7 @@ fun ItemDetails(
             ItemDetailsRow(
                 labelResID = R.string.supplier_email,
                 itemDetail = item.supplierEmail,
+                hideData = shouldHideSupplierData,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -246,6 +258,7 @@ fun ItemDetails(
             ItemDetailsRow(
                 labelResID = R.string.supplier_phone,
                 itemDetail = item.supplierPhone,
+                hideData = shouldHideSupplierData,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -256,12 +269,16 @@ fun ItemDetails(
 
 @Composable
 private fun ItemDetailsRow(
-    @StringRes labelResID: Int, itemDetail: String, modifier: Modifier = Modifier
+    @StringRes labelResID: Int, itemDetail: String, modifier: Modifier = Modifier, hideData: Boolean = false
 ) {
     Row(modifier = modifier) {
         Text(stringResource(labelResID))
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = itemDetail, fontWeight = FontWeight.Bold)
+        Text(
+            text = itemDetail,
+            fontWeight = FontWeight.Bold,
+            modifier = if(hideData) Modifier.blur(12.0.dp, BlurredEdgeTreatment.Unbounded) else Modifier
+        )
     }
 }
 

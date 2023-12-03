@@ -5,4 +5,5 @@ interface SettingsRepository {
 
     fun updateSettings(updatedSettings: SettingsSet)
     fun isDataSharingEnabled(): Boolean
+    fun isSensitiveDataShouldBeHidden(): Boolean
 }

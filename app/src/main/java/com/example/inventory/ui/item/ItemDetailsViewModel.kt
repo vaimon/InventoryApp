@@ -45,7 +45,9 @@ class ItemDetailsViewModel(
             .map {
                 ItemDetailsUiState(outOfStock = it.quantity <= 0,
                     itemDetails = it.toItemDetails(),
-                    dataSharingEnabled = settingsRepository.isDataSharingEnabled())
+                    dataSharingEnabled = settingsRepository.isDataSharingEnabled(),
+                    sensitiveDataBlurEnabled = settingsRepository.isSensitiveDataShouldBeHidden()
+                    )
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -76,5 +78,6 @@ class ItemDetailsViewModel(
 data class ItemDetailsUiState(
     val outOfStock: Boolean = true,
     val dataSharingEnabled: Boolean = false,
+    val sensitiveDataBlurEnabled: Boolean = false,
     val itemDetails: ItemDetails = ItemDetails()
 )

@@ -29,6 +29,10 @@ class SharedPreferencesSettingsRepository(context: Context) : SettingsRepository
         return securePreferences.getBoolean(PREF_SHOULD_USE_DATA_SHARING, false)
     }
 
+    override fun isSensitiveDataShouldBeHidden(): Boolean {
+        return securePreferences.getBoolean(PREF_SHOULD_HIDE_SENSITIVE_DATA, false)
+    }
+
     override fun updateSettings(updatedSettings: SettingsSet) {
         with(securePreferences.edit()){
             updatedSettings.shouldHideSensitiveData?.let{
