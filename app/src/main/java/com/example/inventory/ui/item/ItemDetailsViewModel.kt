@@ -20,6 +20,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.ItemsRepository
+import com.example.inventory.data.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -32,7 +33,8 @@ import kotlinx.coroutines.launch
  */
 class ItemDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val itemsRepository: ItemsRepository
+    private val itemsRepository: ItemsRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val itemId: Int = checkNotNull(savedStateHandle[ItemDetailsDestination.itemIdArg])
@@ -41,7 +43,9 @@ class ItemDetailsViewModel(
         itemsRepository.getItemStream(itemId)
             .filterNotNull()
             .map {
-                ItemDetailsUiState(outOfStock = it.quantity <= 0, itemDetails = it.toItemDetails())
+                ItemDetailsUiState(outOfStock = it.quantity <= 0,
+                    itemDetails = it.toItemDetails(),
+                    dataSharingEnabled = settingsRepository.isDataSharingEnabled())
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -71,5 +75,6 @@ class ItemDetailsViewModel(
  */
 data class ItemDetailsUiState(
     val outOfStock: Boolean = true,
+    val dataSharingEnabled: Boolean = false,
     val itemDetails: ItemDetails = ItemDetails()
 )

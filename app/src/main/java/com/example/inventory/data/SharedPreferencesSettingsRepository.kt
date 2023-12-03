@@ -15,7 +15,7 @@ class SharedPreferencesSettingsRepository(context: Context) : SettingsRepository
     )
 
     override fun getSettings() : SettingsSet {
-        val x = SettingsSet(
+        return SettingsSet(
             shouldHideSensitiveData = securePreferences.getBoolean(PREF_SHOULD_HIDE_SENSITIVE_DATA, false),
             shouldUseDefaults = securePreferences.getBoolean(PREF_SHOULD_USE_DEFAULTS, false),
             shouldUseDataSharing = securePreferences.getBoolean(PREF_SHOULD_USE_DATA_SHARING, false),
@@ -23,7 +23,10 @@ class SharedPreferencesSettingsRepository(context: Context) : SettingsRepository
             defaultSupplierPhone = securePreferences.getString(PREF_DEFAULT_SUPPLIER_PHONE, ""),
             defaultSupplierEmail = securePreferences.getString(PREF_DEFAULT_SUPPLIER_EMAIL, "")
         )
-        return x
+    }
+
+    override fun isDataSharingEnabled() : Boolean{
+        return securePreferences.getBoolean(PREF_SHOULD_USE_DATA_SHARING, false)
     }
 
     override fun updateSettings(updatedSettings: SettingsSet) {

@@ -166,6 +166,7 @@ private fun ItemDetailsBody(
         }
 
         OutlinedButton(
+            enabled = itemDetailsUiState.dataSharingEnabled,
             onClick = {
                       shareLauncher.launch(Intent.createChooser(shareIntent, "Share product via:"))
             },

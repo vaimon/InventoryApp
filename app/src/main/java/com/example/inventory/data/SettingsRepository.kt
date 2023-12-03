@@ -4,4 +4,5 @@ interface SettingsRepository {
     fun getSettings(): SettingsSet
 
     fun updateSettings(updatedSettings: SettingsSet)
+    fun isDataSharingEnabled(): Boolean
 }
