@@ -38,6 +38,6 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 
     override val settingsRepository: SettingsRepository by lazy {
-        SharedPreferncesSettingsRepository()
+        SharedPreferencesSettingsRepository(context)
     }
 }
