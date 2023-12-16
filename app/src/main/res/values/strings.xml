@@ -47,4 +47,5 @@
     <string name="use_default_values">Use default values</string>
     <string name="hide_sensitive_data">Hide sensitive data</string>
     <string name="edit">Edit</string>
+    <string name="save">Save</string>
 </resources>

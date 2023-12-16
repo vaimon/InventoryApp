@@ -54,7 +54,8 @@ object AppViewModelProvider {
             ItemDetailsViewModel(
                 this.createSavedStateHandle(),
                 inventoryApplication().container.itemsRepository,
-                inventoryApplication().container.settingsRepository
+                inventoryApplication().container.settingsRepository,
+                inventoryApplication().container.fileRepository
             )
         }
 

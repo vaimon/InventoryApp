@@ -16,9 +16,11 @@
 
 package com.example.inventory.ui.item
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.inventory.data.FileRepository
 import com.example.inventory.data.ItemsRepository
 import com.example.inventory.data.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,7 +36,8 @@ import kotlinx.coroutines.launch
 class ItemDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val itemsRepository: ItemsRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val fileRepository: FileRepository
 ) : ViewModel() {
 
     private val itemId: Int = checkNotNull(savedStateHandle[ItemDetailsDestination.itemIdArg])
@@ -61,6 +64,10 @@ class ItemDetailsViewModel(
                 itemsRepository.updateItem(currentItem.copy(quantity = currentItem.quantity - 1))
             }
         }
+    }
+
+    suspend fun saveItem(path: Uri?){
+        fileRepository.saveItemToFile(uiState.value.itemDetails.toItem(), path)
     }
 
     suspend fun deleteItem() {

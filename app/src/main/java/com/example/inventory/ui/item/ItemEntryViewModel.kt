@@ -97,7 +97,8 @@ fun Item.toItemDetails(): ItemDetails = ItemDetails(
     quantity = quantity.toString(),
     supplierName = supplierName,
     supplierEmail = supplierEmail,
-    supplierPhone =  supplierPhone
+    supplierPhone =  supplierPhone,
+    creationType = creationType
 )
 
 fun SettingsSet.toItemDetails() = if (shouldUseDefaults == true) ItemDetails(

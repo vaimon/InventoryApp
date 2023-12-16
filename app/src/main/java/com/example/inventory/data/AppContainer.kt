@@ -24,6 +24,7 @@ import android.content.Context
 interface AppContainer {
     val itemsRepository: ItemsRepository
     val settingsRepository: SettingsRepository
+    val fileRepository: FileRepository
 }
 
 /**
@@ -39,5 +40,9 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
     override val settingsRepository: SettingsRepository by lazy {
         SharedPreferencesSettingsRepository(context)
+    }
+
+    override val fileRepository: FileRepository by lazy {
+        SecuredFileRepository(context)
     }
 }

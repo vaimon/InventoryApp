@@ -1,5 +1,6 @@
 package com.example.inventory.ui.item
 
+import com.example.inventory.data.CreationType
 import com.example.inventory.utils.FieldValidator
 
 data class ItemDetails(
@@ -10,6 +11,7 @@ data class ItemDetails(
     val supplierName: String = "",
     val supplierEmail: String = "",
     val supplierPhone: String = "",
+    val creationType: CreationType = CreationType.MANUAL
 ) {
     val isEntryValid: Boolean
         get() {

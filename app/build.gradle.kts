@@ -20,6 +20,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp") version "1.8.21-1.0.11"
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -27,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.inventory"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -87,6 +88,7 @@ dependencies {
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
     implementation("androidx.security:security-crypto:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     // Testing
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

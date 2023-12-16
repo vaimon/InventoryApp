@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Item::class], version = 2, exportSchema = true)
+@Database(entities = [Item::class], version = 3, exportSchema = true)
 abstract class InventoryDatabase : RoomDatabase() {
     abstract fun itemDao(): ItemDao
 

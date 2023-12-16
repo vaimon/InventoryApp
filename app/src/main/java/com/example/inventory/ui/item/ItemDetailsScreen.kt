@@ -18,14 +18,11 @@ package com.example.inventory.ui.item
 
 import android.content.Intent
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.util.Log
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,14 +32,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -52,26 +53,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
+import com.example.inventory.data.CreationType
 import com.example.inventory.data.Item
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.InventoryTheme
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToStream
+import java.util.UUID
 
 object ItemDetailsDestination : NavigationDestination {
     override val route = "item_details"
@@ -90,12 +99,40 @@ fun ItemDetailsScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+
+    val shareIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, uiState.value.itemDetails.toItem().toString())
+        type = "text/plain"
+    }
+
+    val shareLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+        Log.d("Direct Share","Direct Share intent completed. Result code: ${res.resultCode}")
+    }
+
     Scaffold(
         topBar = {
-            InventoryTopAppBar(
-                title = stringResource(ItemDetailsDestination.titleRes),
-                canNavigateBack = true,
-                navigateUp = navigateBack
+            CenterAlignedTopAppBar(
+                title = { Text(stringResource(ItemDetailsDestination.titleRes)) },
+                modifier = modifier,
+                navigationIcon = {
+                        IconButton(onClick = navigateBack) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back_button)
+                            )
+                        }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        shareLauncher.launch(Intent.createChooser(shareIntent, "Share product via:"))
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = stringResource(R.string.share)
+                        )
+                    }
+                }
             )
         }, floatingActionButton = {
             FloatingActionButton(
@@ -120,6 +157,11 @@ fun ItemDetailsScreen(
                     navigateBack()
                 }
             },
+            onSave = {
+                coroutineScope.launch {
+                    viewModel.saveItem(it)
+                }
+            },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
@@ -127,21 +169,30 @@ fun ItemDetailsScreen(
     }
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 @Composable
 private fun ItemDetailsBody(
     itemDetailsUiState: ItemDetailsUiState,
     onSellItem: () -> Unit,
     onDelete: () -> Unit,
+    onSave: (Uri?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shareIntent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, itemDetailsUiState.itemDetails.toItem().toString())
-        type = "text/plain"
+    val context = LocalContext.current
+    val intent = remember {
+        Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/json"
+            putExtra(Intent.EXTRA_TITLE, "item_${UUID.randomUUID()}")
+//        putExtra(DocumentsContract.EXTRA_INITIAL_URI, res)
+        }
     }
-
-    val shareLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
-        Log.d("Direct Share","Direct Share intent completed. Result code: ${res.resultCode}")
+    val fileCreationLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){ result ->
+        result.data?.data?.let{
+            val output = context.contentResolver.openOutputStream(it)
+            Json.encodeToStream(itemDetailsUiState.itemDetails.toItem(), output!!)
+            output.close()
+        }
     }
 
     Column(
@@ -167,7 +218,9 @@ private fun ItemDetailsBody(
             OutlinedButton(
                 onClick = { deleteConfirmationRequired = true },
                 shape = MaterialTheme.shapes.small,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .weight(1.0F)
+                    .padding(8.0.dp)
             ) {
                 Text(stringResource(R.string.delete))
             }
@@ -175,12 +228,14 @@ private fun ItemDetailsBody(
             OutlinedButton(
                 enabled = itemDetailsUiState.dataSharingEnabled,
                 onClick = {
-                    shareLauncher.launch(Intent.createChooser(shareIntent, "Share product via:"))
+                    fileCreationLauncher.launch(intent)
                 },
                 shape = MaterialTheme.shapes.small,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .weight(1.0F)
+                    .padding(8.0.dp)
             ) {
-                Text(stringResource(R.string.share))
+                Text(stringResource(R.string.save))
             }
         }
 
@@ -218,6 +273,11 @@ fun ItemDetails(
                 dimensionResource(id = R.dimen.padding_medium)
             )
         ) {
+            Text(
+                text = "Created with ${if (item.creationType == CreationType.MANUAL) "user input" else "secured file"}",
+                fontSize = TextUnit(12f, TextUnitType.Sp),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
             ItemDetailsRow(
                 labelResID = R.string.item,
                 itemDetail = item.name,
@@ -314,7 +374,8 @@ fun ItemDetailsScreenPreview() {
                 itemDetails = ItemDetails(1, "Pen", "$100", "10")
             ),
             onSellItem = {},
-            onDelete = {}
+            onDelete = {},
+            onSave = {}
         )
     }
 }
