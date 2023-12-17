@@ -126,7 +126,9 @@ fun ItemDetailsScreen(
                 actions = {
                     IconButton(onClick = {
                         shareLauncher.launch(Intent.createChooser(shareIntent, "Share product via:"))
-                    }) {
+                    },
+                        enabled = uiState.value.dataSharingEnabled
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Share,
                             contentDescription = stringResource(R.string.share)
@@ -222,7 +224,6 @@ private fun ItemDetailsBody(
             }
 
             OutlinedButton(
-                enabled = itemDetailsUiState.dataSharingEnabled,
                 onClick = {
                     fileCreationLauncher.launch(intent)
                 },
