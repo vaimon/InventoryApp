@@ -17,6 +17,7 @@
 package com.example.inventory.data
 
 import android.content.Context
+import androidx.security.crypto.MasterKeys
 
 /**
  * App container for Dependency injection.
@@ -35,7 +36,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
      * Implementation for [ItemsRepository]
      */
     override val itemsRepository: ItemsRepository by lazy {
-        OfflineItemsRepository(InventoryDatabase.getDatabase(context).itemDao())
+        OfflineItemsRepository(InventoryDatabase.getDatabase(context, MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)).itemDao())
     }
 
     override val settingsRepository: SettingsRepository by lazy {

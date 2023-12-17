@@ -89,6 +89,8 @@ dependencies {
 
     implementation("androidx.security:security-crypto:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("net.zetetic:android-database-sqlcipher:4.5.2")
+    implementation ("com.commonsware.cwac:saferoom.x:1.2.1")
 
     // Testing
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
