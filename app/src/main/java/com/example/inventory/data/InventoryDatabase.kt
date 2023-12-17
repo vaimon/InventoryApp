@@ -22,11 +22,12 @@ abstract class InventoryDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context, cipherKey: String): InventoryDatabase {
             val databaseFile = context.getDatabasePath("item_database")
-            SQLiteDatabase.loadLibs(context);
+            SQLiteDatabase.loadLibs(context)
 
             when(SQLCipherUtils.getDatabaseState(databaseFile)){
                 SQLCipherUtils.State.UNENCRYPTED -> {
                     SQLCipherUtils.encrypt(context, databaseFile, cipherKey.toByteArray())
+                    Log.i("InventoryDB", "DB was encrypted successfully")
                 }
                 SQLCipherUtils.State.ENCRYPTED -> {
                     Log.i("InventoryDB", "DB has already been encrypted")

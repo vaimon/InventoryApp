@@ -17,6 +17,8 @@
 package com.example.inventory.data
 
 import android.content.Context
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import androidx.security.crypto.MasterKeys
 
 /**
@@ -36,7 +38,17 @@ class AppDataContainer(private val context: Context) : AppContainer {
      * Implementation for [ItemsRepository]
      */
     override val itemsRepository: ItemsRepository by lazy {
-        OfflineItemsRepository(InventoryDatabase.getDatabase(context, MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)).itemDao())
+        OfflineItemsRepository(InventoryDatabase.getDatabase(
+            context,
+            MasterKeys.getOrCreate(KeyGenParameterSpec.Builder(
+                "InventoryDbKey",
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+            ).apply {
+                setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                setKeySize(256)
+            }.build())
+        ).itemDao())
     }
 
     override val settingsRepository: SettingsRepository by lazy {
