@@ -178,20 +178,16 @@ private fun ItemDetailsBody(
     onSave: (Uri?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     val intent = remember {
         Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/json"
+            type = "application/encrypted"
             putExtra(Intent.EXTRA_TITLE, "item_${UUID.randomUUID()}")
-//        putExtra(DocumentsContract.EXTRA_INITIAL_URI, res)
         }
     }
     val fileCreationLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){ result ->
         result.data?.data?.let{
-            val output = context.contentResolver.openOutputStream(it)
-            Json.encodeToStream(itemDetailsUiState.itemDetails.toItem(), output!!)
-            output.close()
+            onSave(it)
         }
     }
 

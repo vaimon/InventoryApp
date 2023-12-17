@@ -17,6 +17,7 @@
 package com.example.inventory.ui.item
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -67,7 +68,11 @@ class ItemDetailsViewModel(
     }
 
     suspend fun saveItem(path: Uri?){
-        fileRepository.saveItemToFile(uiState.value.itemDetails.toItem(), path)
+        path?.let {
+            fileRepository.saveItemToFile(uiState.value.itemDetails.toItem(), it)
+        } ?: {
+            Log.e("InventoryFile", "Uri was null")
+        }
     }
 
     suspend fun deleteItem() {
