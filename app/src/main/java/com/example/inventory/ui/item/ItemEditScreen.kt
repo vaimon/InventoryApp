@@ -17,15 +17,20 @@
 package com.example.inventory.ui.item
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.common.ItemEntryBody
@@ -52,10 +57,17 @@ fun ItemEditScreen(
 
     Scaffold(
         topBar = {
-            InventoryTopAppBar(
-                title = stringResource(ItemEditDestination.titleRes),
-                canNavigateBack = true,
-                navigateUp = onNavigateUp
+            CenterAlignedTopAppBar(
+                title = { Text(stringResource(ItemEditDestination.titleRes)) },
+                modifier = modifier,
+                navigationIcon = {
+                        IconButton(onClick = onNavigateUp) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back_button)
+                            )
+                        }
+                }
             )
         },
         modifier = modifier

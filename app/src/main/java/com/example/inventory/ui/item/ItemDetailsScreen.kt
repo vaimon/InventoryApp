@@ -183,7 +183,7 @@ private fun ItemDetailsBody(
     val intent = remember {
         Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/encrypted"
+            type = "application/octet-stream"
             putExtra(Intent.EXTRA_TITLE, "item_${UUID.randomUUID()}")
         }
     }

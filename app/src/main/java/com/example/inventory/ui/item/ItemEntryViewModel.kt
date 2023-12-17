@@ -16,10 +16,12 @@
 
 package com.example.inventory.ui.item
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.inventory.data.FileRepository
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
 import com.example.inventory.data.SettingsRepository
@@ -31,7 +33,8 @@ import java.text.NumberFormat
  */
 class ItemEntryViewModel(
     private val itemsRepository: ItemsRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val fileRepository: FileRepository
 ) : ViewModel() {
 
     /**
@@ -50,7 +53,12 @@ class ItemEntryViewModel(
     }
 
     suspend fun saveItem() {
-            itemsRepository.insertItem(itemUiState.itemDetails.toItem())
+        itemsRepository.insertItem(itemUiState.itemDetails.toItem())
+    }
+
+    suspend fun loadItemFromFile(targetFile: Uri) {
+        val item = fileRepository.getItemFromFile(targetFile)
+        itemsRepository.insertItem(item)
     }
 }
 
@@ -73,7 +81,8 @@ fun ItemDetails.toItem(): Item = Item(
     quantity = quantity.toIntOrNull() ?: 0,
     supplierName = supplierName,
     supplierEmail = supplierEmail,
-    supplierPhone =  supplierPhone
+    supplierPhone = supplierPhone,
+    creationType = creationType
 )
 
 fun Item.formatedPrice(): String {
@@ -97,7 +106,7 @@ fun Item.toItemDetails(): ItemDetails = ItemDetails(
     quantity = quantity.toString(),
     supplierName = supplierName,
     supplierEmail = supplierEmail,
-    supplierPhone =  supplierPhone,
+    supplierPhone = supplierPhone,
     creationType = creationType
 )
 
